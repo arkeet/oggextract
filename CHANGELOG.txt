@@ -1,0 +1,6 @@
+October 21, 2012:
+    Added support for extracting multiple files.
+    Fixed little bugs.
+
+December 30, 2007:
+    Some old release. History before this time is lost.
