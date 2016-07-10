@@ -22,25 +22,30 @@ int findpattern(unsigned char *data, int datalen, int start)
 {
     int i;
 
-    for (i = start; i < datalen - 4; i++)
-        if (*(int *)(data + i) == 0x5367674f) /* "OggS" */
+    for (i = start; i < datalen - 4; i++) {
+        if (*(int *)(data + i) == 0x5367674f) { /* "OggS" */
             return i;
+        }
+    }
     return -1;
 }
 
 int ogg_ispage(unsigned char *data)
 {
     /* capture pattern */
-    if (*(int *)data != 0x5367674f) /* "OggS" */
+    if (*(int *)data != 0x5367674f) { /* "OggS" */
         return 0;
+    }
 
     /* stream structure version */
-    if (data[4] != 0x00)
+    if (data[4] != 0x00) {
         return 0;
+    }
 
     /* header type flag */
-    if ((data[5] & ~7) != 0x00)
+    if ((data[5] & ~7) != 0x00) {
         return 0;
+    }
 
     /* I think we can reasonably assume it is a real page now */
     return 1;
@@ -57,8 +62,9 @@ unsigned int ogg_getlength(unsigned char *data)
     segs = data + 27;
     length = 27 + nsegs;
 
-    for (i = 0; i < nsegs; i++)
+    for (i = 0; i < nsegs; i++) {
         length += segs[i];
+    }
     return length;
 }
 
@@ -88,13 +94,11 @@ int extract(char *filename)
     int numfiles = 0;
 
     printf("Extracting %s...\n", filename);
-    if (stat(filename, &statdata) < 0)
-    {
+    if (stat(filename, &statdata) < 0) {
         perror("stat");
         return 1;
     }
-    if (statdata.st_mode & S_IFDIR)
-    {
+    if (statdata.st_mode & S_IFDIR) {
         fprintf(stderr, "error: %s is a directory\n", filename);
         return 1;
     }
@@ -103,8 +107,7 @@ int extract(char *filename)
     /* FIXME: prone to race conditions */
 
     fd = open(filename, O_RDONLY);
-    if (fd < 0)
-    {
+    if (fd < 0) {
         perror("open");
         return 1;
     }
@@ -113,28 +116,23 @@ int extract(char *filename)
 
     outfilename = malloc(strlen(filename) + 16);
 
-    while (1)
-    {
+    while (1) {
         pos = findpattern(filedata, filesize, pos);
         if (pos < 0)
             break;
 
         oggdata = filedata + pos;
-        if (ogg_ispage(oggdata))
-        {
+        if (ogg_ispage(oggdata)) {
             pagelen = ogg_getlength(oggdata);
 
-            if (outfd < 0 && ogg_isinitial(oggdata))
-            {
+            if (outfd < 0 && ogg_isinitial(oggdata)) {
                 sprintf(outfilename, "%s_%08x.ogg", filename, pos);
                 outfd = creat(outfilename, -1);
                 numfiles++;
             }
-            if (outfd >= 0)
-            {
+            if (outfd >= 0) {
                 write(outfd, oggdata, pagelen);
-                if (ogg_isfinal(oggdata))
-                {
+                if (ogg_isfinal(oggdata)) {
                     close(outfd);
                     outfd = -1;
                 }
@@ -160,12 +158,14 @@ int main(int argc, char **argv)
     int i;
     int failures;
 
-    if (argc < 2)
+    if (argc < 2) {
         return usage();
+    }
 
     failures = 0;
-    for (i = 1; i < argc; i++)
+    for (i = 1; i < argc; i++) {
         failures += extract(argv[i]);
+    }
     if (failures > 0) {
         fprintf(stderr, "Errors processing %d file(s).\n", failures);
         return 1;
