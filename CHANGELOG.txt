@@ -1,3 +1,6 @@
+July 10, 2015:
+    Fixed a small error reported by Sean Pepin.
+
 October 21, 2012:
     Added support for extracting multiple files.
     Fixed little bugs.

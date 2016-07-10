@@ -1,7 +1,4 @@
 /*
- * Author: Adrian Keet
- * Last modified: October 21, 2012
- *
  * This code is in the public domain. Go ahead and use it for whatever you
  * want. I don't care. :)
  */
@@ -98,7 +95,7 @@ int extract(char *filename)
     }
     if (statdata.st_mode & S_IFDIR)
     {
-        fprintf(stderr, "error: Is a directory\n", filename);
+        fprintf(stderr, "error: %s is a directory\n", filename);
         return 1;
     }
     filesize = statdata.st_size;
@@ -169,6 +166,10 @@ int main(int argc, char **argv)
     failures = 0;
     for (i = 1; i < argc; i++)
         failures += extract(argv[i]);
-    if (failures > 0)
+    if (failures > 0) {
         fprintf(stderr, "Errors processing %d file(s).\n", failures);
+        return 1;
+    }
+
+    return 0;
 }
