@@ -4,7 +4,7 @@
  */
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -14,7 +14,7 @@
 
 int usage()
 {
-    fprintf(stderr, "Usage: oggextract <filename> [<filename> ...]");
+    fprintf(stderr, "Usage: oggextract <filename> [<filename> ...]\n");
     return 255;
 }
 
